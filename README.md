@@ -1,3 +1,4 @@
+SHRIRAM.S(212222020027)
 # EXP-4-Home-Automation-System-with-IOT
 
 # Aim:
@@ -14,8 +15,9 @@ Arduino software
 Jumper Wires
 
 # Circuit Diagram:
-
-
+~~~
+<img width="1140" height="626" alt="image" src="https://github.com/user-attachments/assets/de58aa24-ad0c-4b83-9869-11d2eed2c184" />
+~~~
 # Theory: 
 
 
@@ -26,9 +28,108 @@ When we apply an active high signal to the signal pin of the relay module from a
 
 
 # Program:
+~~~
+#include<Servo.h>
+const int pingPin = 7;
+int servoPin = 8;
 
+Servo servo1;
 
+void setup() {
+  // initialize serial communication:
+  Serial.begin(9600);
+  servo1.attach(servoPin);
+  pinMode(2,INPUT);
+  pinMode(4,OUTPUT);
+  pinMode(11,OUTPUT);
+  pinMode(12,OUTPUT);
+  pinMode(13,OUTPUT);
+  pinMode(A0,INPUT);
+  digitalWrite(2,LOW);
+  digitalWrite(11,HIGH);
+  
+}
 
+void loop() {
+  
+  long duration, inches, cm;
+
+  pinMode(pingPin, OUTPUT);
+  digitalWrite(pingPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(pingPin, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(pingPin, LOW);
+
+  // The same pin is used to read the signal from the PING))): a HIGH pulse
+  // whose duration is the time (in microseconds) from the sending of the ping
+  // to the reception of its echo off of an object.
+  pinMode(pingPin, INPUT);
+  duration = pulseIn(pingPin, HIGH);
+
+  // convert the time into a distance
+  inches = microsecondsToInches(duration);
+  cm = microsecondsToCentimeters(duration);
+
+  //Serial.print(inches);
+  //Serial.print("in, ");
+  //Serial.print(cm);
+  //Serial.print("cm");
+  //Serial.println();
+  //delay(100);
+  
+  servo1.write(0);
+  
+  if(cm < 40)
+  {
+    servo1.write(90);
+    delay(2000);
+  }
+  else
+  {
+    servo1.write(0);
+  }
+  
+  // PIR with LED starts
+  int pir = digitalRead(2);
+  
+  if(pir == HIGH)
+  {
+    digitalWrite(4,HIGH);
+    delay(1000);
+  }
+  else if(pir == LOW)
+  {
+    digitalWrite(4,LOW);
+  }
+  
+  //temp with fan
+  float value=analogRead(A0);
+  float temperature=value*0.48;
+  
+  Serial.println("temperature");
+  Serial.println(temperature);
+  
+  if(temperature > 20)
+  {
+    digitalWrite(12,HIGH);
+    digitalWrite(13,LOW);
+  }
+  else
+  {
+    digitalWrite(12,LOW);
+    digitalWrite(13,LOW);
+  }
+}
+
+long microsecondsToInches(long microseconds) {
+  return microseconds / 74 / 2;
+}
+
+long microsecondsToCentimeters(long microseconds) {
+  return microseconds / 29 / 2;
+}
+~~~
 # Procedure:
 •	Make the circuit connection as per the diagram. In the mobile, download and “Blynq IoT” application using Google play store and Install it. Create log in ID and Password.
 •	Connect the IN pin of the Relay module to D1 pin of NodeMCU (ESP8266).
@@ -47,6 +148,11 @@ When we apply an active high signal to the signal pin of the relay module from a
 
 
 # Output:
-
+~~~
+https://go.screenpal.com/watch/cT6DFjnbvhD
+~~~
 # Result:
+~~~
+Thus the Lamp at home (230 V AC) On / Off using ESP8266 is made.
+~~~
 
